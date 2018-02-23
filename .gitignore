@@ -14,5 +14,6 @@ workspace/run
 workspace/classes
 workspace-1.11.2/run
 workspace-1.11.2/classes
+workspace-1.11.2/src
 
 workspace/
