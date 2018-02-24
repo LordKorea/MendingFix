@@ -6,7 +6,9 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Enchantments;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -17,7 +19,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.List;
 
-@Mod(modid = "mendingfix", version = "1.0.1-1.11.2.2588")
+@Mod(modid = "mendingfix", version = "1.0.1-1.10.2.2511")
 public class MendingFix {
 
     /**
@@ -31,25 +33,25 @@ public class MendingFix {
      * @param ench The enchantment which is required.
      * @param player The player.
      *
-     * @return The first item that matches the description or the empty item {@link ItemStack#EMPTY}.
+     * @return The first item that matches the description or the empty item {@code null}.
      */
     private static ItemStack getDamagedEnchantedItem(Enchantment ench, EntityPlayer player) {
-        List<ItemStack> possible = ench.getEntityEquipment(player);
+        List<ItemStack> possible = Lists.newArrayList(ench.getEntityEquipment(player));
         if (possible.isEmpty()) {
             // No viable equipment items.
-            return ItemStack.EMPTY;
+            return null;
         } else {
             // Filter viable equipment items.
             List<ItemStack> choices = Lists.newArrayList();
             for (ItemStack itemstack : possible) {
-                if (!itemstack.isEmpty() && itemstack.isItemDamaged() && EnchantmentHelper.getEnchantmentLevel(ench, itemstack) > 0) {
+                if (itemstack != null && itemstack.isItemDamaged() && EnchantmentHelper.getEnchantmentLevel(ench, itemstack) > 0) {
                     choices.add(itemstack);
                 }
             }
 
             // Pick one choice at random.
             if (choices.isEmpty()) {
-                return ItemStack.EMPTY;
+                return null;
             }
             return choices.get(player.getRNG().nextInt(choices.size()));
         }
@@ -75,11 +77,16 @@ public class MendingFix {
         // -> EntityPlayer#xpCooldown is set to 2.
         player.xpCooldown = 2;
 
+        // -> Play sound
+        xp.worldObj.playSound(null, player.posX, player.posY, player.posZ,
+                SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F,
+                0.5F * ((player.getRNG().nextFloat() - player.getRNG().nextFloat()) * 0.7F + 1.8F));
+
         // -> EntityPlayer#onItemPickup is called with the xp orb and 1 (quantity).
         player.onItemPickup(xp, 1);
 
         // -> The mending effect is applied and the xp value is recalculated.
-        if (!item.isEmpty()) {
+        if (item != null && item.isItemDamaged()) {
             int realRepair = Math.min(xp.xpValue * DURABILITY_PER_XP, item.getItemDamage());
             xp.xpValue -= realRepair / DURABILITY_PER_XP;
             item.setItemDamage(item.getItemDamage() - realRepair);
