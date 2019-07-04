@@ -79,11 +79,14 @@ public class MendingFix {
         player.onItemPickup(xp, 1);
 
         // -> The mending effect is applied and the xp value is recalculated.
-        if (!item.isEmpty()) {
-            int realRepair = Math.min(xp.xpValue * DURABILITY_PER_XP, item.getItemDamage());
-            xp.xpValue -= realRepair / DURABILITY_PER_XP;
+        int repairPower = xp.xpValue * DURABILITY_PER_XP;
+        while (!item.isEmpty() && repairPower > 0) {
+            int realRepair = Math.min(repairPower, item.getItemDamage());
+            repairPower -= realRepair;
             item.setItemDamage(item.getItemDamage() - realRepair);
+            item = getDamagedEnchantedItem(Enchantments.MENDING, player);
         }
+        xp.xpValue = repairPower / DURABILITY_PER_XP;
 
         // -> The XP are added to the player's experience.
         if (xp.xpValue > 0) {
