@@ -19,8 +19,18 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.List;
 
-@Mod(modid = "mendingfix", version = "1.0.1-1.10.2.2511")
+@Mod(modid = MendingFix.MODID, version = MendingFix.VERSION)
 public class MendingFix {
+
+    /**
+     * The ID of the mod.
+     */
+    public static final String MODID = "mendingfix";
+
+    /**
+     * The version of the mod.
+     */
+    public static final String VERSION = "@VERSION@";
 
     /**
      * Vanilla value: 2 Durability per XP.
@@ -35,15 +45,15 @@ public class MendingFix {
      *
      * @return The first item that matches the description or the empty item {@code null}.
      */
-    private static ItemStack getDamagedEnchantedItem(Enchantment ench, EntityPlayer player) {
-        List<ItemStack> possible = Lists.newArrayList(ench.getEntityEquipment(player));
+    private static ItemStack getDamagedEnchantedItem(final Enchantment ench, final EntityPlayer player) {
+        final List<ItemStack> possible = Lists.newArrayList(ench.getEntityEquipment(player));
         if (possible.isEmpty()) {
             // No viable equipment items.
             return null;
         } else {
             // Filter viable equipment items.
-            List<ItemStack> choices = Lists.newArrayList();
-            for (ItemStack itemstack : possible) {
+            final List<ItemStack> choices = Lists.newArrayList();
+            for (final ItemStack itemstack : possible) {
                 if (itemstack != null && itemstack.isItemDamaged() && EnchantmentHelper.getEnchantmentLevel(ench, itemstack) > 0) {
                     choices.add(itemstack);
                 }
@@ -58,17 +68,17 @@ public class MendingFix {
     }
 
     @EventHandler
-    public void onInit(FMLPreInitializationEvent event) {
+    public void onInit(final FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onXP(PlayerPickupXpEvent e) {
+    public void onXP(final PlayerPickupXpEvent e) {
         // Rewrite this event's handling.
         e.setCanceled(true);
 
-        EntityPlayer player = e.getEntityPlayer();
-        EntityXPOrb xp = e.getOrb();
+        final EntityPlayer player = e.getEntityPlayer();
+        final EntityXPOrb xp = e.getOrb();
         ItemStack item = getDamagedEnchantedItem(Enchantments.MENDING, player);
 
         // See EntityXPOrb#onCollideWithPlayer for details.
@@ -88,7 +98,7 @@ public class MendingFix {
         // -> The mending effect is applied and the xp value is recalculated.
         int repairPower = xp.xpValue * DURABILITY_PER_XP;
         while (item != null && repairPower > 0) {
-            int realRepair = Math.min(repairPower, item.getItemDamage());
+            final int realRepair = Math.min(repairPower, item.getItemDamage());
             repairPower -= realRepair;
             item.setItemDamage(item.getItemDamage() - realRepair);
             item = getDamagedEnchantedItem(Enchantments.MENDING, player);
