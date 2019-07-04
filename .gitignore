@@ -8,11 +8,10 @@ build
 eclipse
 .idea
 *.iml
-workspace/README.txt
-workspace/src
-workspace/run
-workspace/classes
+classes
+run
 
+workspace-1.12.2/src
 workspace-1.11.2
 workspace-1.10.2
 workspace-1.9.4
