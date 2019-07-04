@@ -3,10 +3,7 @@
 A minecraft mod designed to alter the behavior of the `Mending` enchantment.
 
 Project page:
-[https://minecraft.curseforge.com/projects/mending-fix](https://minecraft.curseforge.com/projects/mending-fix)
-
-WARNING: THE PROJECT PAGE IS NO LONGER UPDATED BECAUSE CURSE WANTS ME TO HAVE
-A TWITCH ACCOUNT WHICH I DON'T WANT TO HAVE.
+[https://lordkorea.gitlab.io/MendingFix/](https://lordkorea.gitlab.io/MendingFix/)
 
 The default minecraft mechanics select a random item from your equipment that has the
 enchantment mending when you pickup experience orbs. However, the selected item might
