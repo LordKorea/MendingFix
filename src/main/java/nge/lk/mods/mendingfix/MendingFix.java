@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.List;
 
-@Mod(modid = "mendingfix", version = "1.0.1-1.12.2.2618")
+@Mod(modid = "mendingfix", version = "1.0.1-1.12.2.2838")
 public class MendingFix {
 
     /**
