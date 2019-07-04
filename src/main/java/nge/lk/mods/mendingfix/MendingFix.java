@@ -46,7 +46,11 @@ public class MendingFix {
      * @return The first item that matches the description or the empty item {@code null}.
      */
     private static ItemStack getDamagedEnchantedItem(final Enchantment ench, final EntityPlayer player) {
-        final List<ItemStack> possible = Lists.newArrayList(ench.getEntityEquipment(player));
+        final Iterable<ItemStack> stacks = ench.getEntityEquipment(player);
+        if (stacks == null) {
+            return null;
+        }
+        final List<ItemStack> possible = Lists.newArrayList(stacks);
         if (possible.isEmpty()) {
             // No viable equipment items.
             return null;
